@@ -124,5 +124,25 @@ app.post('/heroUpdate', upload.single('heroIcon'), (req, res) => {
   )
 })
 
+// 路由5 英雄删除
+app.get('/heroDelete', (req, res) => {
+  // 接收数据
+  const id = req.query.id
+  // 删除数据（真删除，工作中后台一般是 软删除）
+  dbHelper.deleteOne(
+    'cqlist',
+    {
+      _id: dbHelper.ObjectId(id)
+    },
+    result => {
+      // res.send(result)
+      res.send({
+        msg: '删除成功',
+        code: 200
+      })
+    }
+  )
+})
+
 // 开启监听
 app.listen(8848)
