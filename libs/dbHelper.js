@@ -9,8 +9,9 @@ const MongoClient = require('mongodb').MongoClient
 // mongodb这个第三方模块 提供了一个ObjectId方法
 const ObjectId = require('mongodb').ObjectId
 
-// 数据库地址
-const url = 'mongodb://localhost:27017'
+// 数据库地址 localhost 访问时 需要被解析为ip地址
+// const url = 'mongodb://localhost:27017'
+const url = 'mongodb://127.0.0.1:27017'
 
 // 库的名字
 // 一般一个项目 用到的库 就是同一个

@@ -98,31 +98,37 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="skill" class="col-sm-2 control-label">技能</label>
+                  <label for="skillName" class="col-sm-2 control-label"
+                    >技能</label
+                  >
                   <div class="col-sm-10">
                     <input
                       type="text"
                       class="form-control"
-                      id="skill"
-                      name="skill"
+                      id="skillName"
+                      name="skillName"
                       placeholder="请输入技能"
                     />
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="icon" class="col-sm-2 control-label">头像</label>
+                  <label for="heroIcon" class="col-sm-2 control-label"
+                    >头像</label
+                  >
                   <div class="col-sm-10">
                     <input
                       type="file"
                       class="form-control"
-                      id="icon"
-                      name="icon"
+                      id="heroIcon"
+                      name="heroIcon"
                     />
                   </div>
                 </div>
                 <div class="form-group">
                   <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-default">新增</button>
+                    <button type="submit" class="btn btn-default btn-add">
+                      新增
+                    </button>
                   </div>
                 </div>
               </form>
@@ -139,3 +145,29 @@
   Include all compiled plugins (below), or include individual files as needed
 -->
 <script src="./lib/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  // 新增数据
+  $(function() {
+    $('.btn-add').click(function() {
+      // 获取formData
+      const sendData = new FormData($('form')[0])
+      // 提交数据
+      $.ajax({
+        url: '/heroAdd',
+        type: 'post',
+        data: sendData,
+        contentType: false,
+        processData: false,
+        success(backData) {
+          // console.log(backData);
+          alert(backData.msg)
+          setTimeout(() => {
+            window.location.href = './index.html'
+          }, 1000)
+        }
+      })
+
+      return false
+    })
+  })
+</script>

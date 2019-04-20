@@ -83,6 +83,8 @@
             </div>
             <div class="panel-body">
               <form action="#" method="" class="form-horizontal">
+                <!-- 隐藏一个input -->
+                <input type="hidden" name="id" />
                 <div class="form-group">
                   <label for="heroName" class="col-sm-2 control-label"
                     >姓名</label
@@ -99,33 +101,39 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="skill" class="col-sm-2 control-label">技能</label>
+                  <label for="skillName" class="col-sm-2 control-label"
+                    >技能</label
+                  >
                   <div class="col-sm-10">
                     <input
                       required
                       type="text"
                       class="form-control"
-                      id="skill"
-                      name="skill"
+                      id="skillName"
+                      name="skillName"
                       placeholder="请输入技能"
                     />
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="icon" class="col-sm-2 control-label">头像</label>
+                  <label for="heroIcon" class="col-sm-2 control-label"
+                    >头像</label
+                  >
                   <div class="col-sm-10">
                     <input
                       required
                       type="file"
                       class="form-control"
-                      id="icon"
-                      name="icon"
+                      id="heroIcon"
+                      name="heroIcon"
                     />
                   </div>
                 </div>
                 <div class="form-group">
                   <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-default">保存</button>
+                    <button type="submit" class="btn btn-default btn-save">
+                      保存
+                    </button>
                     <button type="submit" class="btn btn-cancel">取消</button>
                   </div>
                 </div>
@@ -138,8 +146,57 @@
   </body>
 </html>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="/bootstrap/js/jquery-1.12.4.js"></script>
+<script src="./lib/bootstrap/js/jquery-1.12.4.js"></script>
 <!--
   Include all compiled plugins (below), or include individual files as needed
 -->
-<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="./lib/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  $(function() {
+    // 获取url中的id ?id=5cb82e472f9d7e0d8ce3534c
+    const id = window.location.search.split('=')[1]
+    // console.log(id);
+
+    // 获取详细数据
+    $.ajax({
+      url: '/heroDetail',
+      data: {
+        id
+      },
+      success(backData) {
+        // console.log(backData);
+        $('form #heroName').val(backData.heroName)
+        $('form #skillName').val(backData.skillName)
+        // id也要保存进去
+        $('input[name=id]').val(backData._id)
+        // file无法通过value设置内容
+        // $('form #heroIcon').val(backData.heroIcon)
+      }
+    })
+
+    // 点击保存
+    $('.btn-save').click(function() {
+      const data = new FormData($('form')[0])
+      $.ajax({
+        url: '/heroUpdate',
+        type: 'post',
+        data,
+        processData: false,
+        contentType: false,
+        success(backData) {
+          // console.log(backData)
+          alert(backData.msg)
+          setTimeout(() => {
+            window.location.href = './index.html'
+          }, 1000)
+        }
+      })
+      return false
+    })
+
+    // 点击取消
+    $('.btn-cancel').click(function() {
+      window.location.href = './index.html'
+    })
+  })
+</script>
