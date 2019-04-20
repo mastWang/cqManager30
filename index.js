@@ -1,6 +1,12 @@
 // 导入模块
 const express = require('express')
 const dbHelper = require('./libs/dbHelper')
+// 导入文件上传中间件
+const multer = require('multer')
+// 设置保存的地址
+const upload = multer({ dest: 'views/imgs/' })
+// 导入path模块
+const path = require('path')
 
 // 实例化服务器对象
 const app = express()
@@ -48,14 +54,74 @@ app.get('/heroList', (req, res) => {
 })
 
 // 路由2 英雄详情
-app.get('/heroDetail',(req,res)=>{
+app.get('/heroDetail', (req, res) => {
   // 获取id
   const id = req.query.id
   // 根据id查询数据
-  dbHelper.find('cqlist',{_id:dbHelper.ObjectId(id)},result=>{
+  dbHelper.find('cqlist', { _id: dbHelper.ObjectId(id) }, result => {
     // 返回查询的数据
-    res.send(result)
+    res.send(result[0])
   })
+})
+
+// 路由3 英雄新增 文件上传
+app.post('/heroAdd', upload.single('heroIcon'), (req, res) => {
+  // 打印数据
+  // 文件信息
+  // console.log(req.file)
+  // 文本信息
+  // console.log(req.body)
+  // 获取数据
+  const heroName = req.body.heroName
+  const skillName = req.body.skillName
+  // 图片本地地址 托管静态资源的时候 views已经设置 访问时不需要
+  const heroIcon = path.join('imgs', req.file.filename)
+
+  // 保存到数据库中
+  dbHelper.insertOne(
+    'cqlist',
+    {
+      heroName,
+      heroIcon,
+      skillName
+    },
+    result => {
+      // res.send(result)
+      res.send({
+        code: 200,
+        msg: '添加成功'
+      })
+    }
+  )
+})
+
+// 路由4 英雄修改
+app.post('/heroUpdate', upload.single('heroIcon'), (req, res) => {
+  // 获取数据
+  const heroName = req.body.heroName
+  const skillName = req.body.skillName
+  // 图片本地地址 托管静态资源的时候 views已经设置 访问时不需要
+  const heroIcon = path.join('imgs', req.file.filename)
+  // 英雄id
+  const id = req.body.id
+
+  // 保存到数据库中
+  dbHelper.updateOne(
+    'cqlist',
+    { _id: dbHelper.ObjectId(id) },
+    {
+      heroName,
+      heroIcon,
+      skillName
+    },
+    result => {
+      // res.send(result)
+      res.send({
+        msg: '修改成功',
+        code: 200
+      })
+    }
+  )
 })
 
 // 开启监听

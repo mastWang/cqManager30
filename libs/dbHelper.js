@@ -23,7 +23,7 @@ module.exports = {
   // 参数2 查询条件
   // 参数3 回调函数
   find(collectionName, query, callback) {
-    MongoClient.connect(url, (err, client) => {
+    MongoClient.connect(url, { useNewUrlParser: true }, (err, client) => {
       // 连接成功数据库之后 会 触发
       // console.log('数据库连上啦')
       // 选择使用的数据库
@@ -45,7 +45,7 @@ module.exports = {
   // 参数2 插入的数据
   // 参数3 回调函数
   insertOne(collectionName, insertData, callback) {
-    MongoClient.connect(url, (err, client) => {
+    MongoClient.connect(url, { useNewUrlParser: true }, (err, client) => {
       // 选择使用的数据库
       const db = client.db(dbName)
       // 选择使用呢的集合
@@ -65,7 +65,7 @@ module.exports = {
   // 参数3 修改的内容
   // 参数4 回调函数
   updateOne(collectionName, query, update, callback) {
-    MongoClient.connect(url, (err, client) => {
+    MongoClient.connect(url, { useNewUrlParser: true }, (err, client) => {
       // 选择使用的数据库
       const db = client.db(dbName)
       // 选择使用的集合
@@ -83,7 +83,7 @@ module.exports = {
   // 参数2 查询条件
   // 参数3 回调函数
   deleteOne(collectionName, query, callback) {
-    MongoClient.connect(url, (err, client) => {
+    MongoClient.connect(url, { useNewUrlParser: true }, (err, client) => {
       // 选择使用的数据库
       const db = client.db(dbName)
       // 选择使用的集合
