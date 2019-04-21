@@ -43,10 +43,10 @@
                   <div class="col-sm-10">
                     <input
                       type="text"
-                      name="userName"
-                      value="赵*天"
+                      name="username"
+                      value="叶良辰"
                       class="form-control"
-                      id="userName"
+                      id="username"
                       placeholder="请输入用户名"
                     />
                   </div>
@@ -58,10 +58,10 @@
                   <div class="col-sm-10">
                     <input
                       type="password"
-                      name="userPass"
+                      name="password"
                       value="1234"
                       class="form-control"
-                      id="userPass"
+                      id="password"
                       placeholder="请输入密码"
                     />
                   </div>
@@ -73,9 +73,9 @@
                   <div class="col-sm-6">
                     <input
                       type="text"
-                      name="vCode"
+                      name="vcode"
                       class="form-control"
-                      id="vCode"
+                      id="vcode"
                       placeholder="请输入验证码"
                     />
                   </div>
@@ -104,6 +104,8 @@
 <script src="./lib/bootstrap/js/jquery-1.12.4.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="./lib/bootstrap/js/bootstrap.min.js"></script>
+<!-- 导入md5.min.js -->
+<script src="./lib/md5/md5.min.js"></script>
 <script>
   $(function() {
     $('.vCode').click(function() {
@@ -112,6 +114,33 @@
       // url?随机数  url?时间戳
       // $(this).attr('src', `/captcha?${Date.now()}`)
       $(this).attr('src', `/captcha?${Math.random()}`)
+    })
+
+    // 点击登录
+    $('.login').click(function(e) {
+      e.preventDefault()
+      // 对输入的密码进行处理
+      // 加密计算的时候 额外的增加一个字段进行计算 "加盐"
+      const password = md5($('#password').val(), 'westblueflower')
+      // 设置的文本框中
+      $('#password').val(password)
+      $.ajax({
+        url: '/login',
+        type: 'post',
+        data: $('form').serialize(),
+        success(backData) {
+          // console.log(backData)
+          alert(backData.msg)
+          if (backData.code === 401) {
+            // 重新获取验证码
+            $('.vCode').click()
+          } else if (backData.code === 200) {
+            // 去首页
+            // 获取用户名 带到首页去
+            window.location.href = './index.html?username=' + backData.username
+          }
+        }
+      })
     })
   })
 </script>

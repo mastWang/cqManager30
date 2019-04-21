@@ -39,6 +39,11 @@
         width: 50px;
         height: 50px;
       }
+      .username {
+        font-weight: 900;
+        color: hotpink;
+        background-color: yellowgreen;
+      }
     </style>
   </head>
 
@@ -71,7 +76,7 @@
                 id="bs-example-navbar-collapse-1"
               >
                 <p class="navbar-text navbar-right " style="font-weight: 700">
-                  欢迎 【jack】登录
+                  欢迎 【 <strong class="username">jack</strong> 】登录
                   <a href="#" class="logout">退出</a>
                 </p>
               </div>
@@ -279,6 +284,30 @@
         })
       } else {
         alert('谢不杀之恩')
+      }
+    })
+
+    // 用户名渲染到页面上
+    const username = window.location.search.split('=')[1]
+    $('.username').text(username)
+
+    // 点击登出
+    $('.logout').click(function() {
+      if (
+        window.confirm(
+          '你真的要走！5555 o(╥﹏╥)o,你还有10w金币没有用哦，马上就要到vip60级了，你真的要走！'
+        )
+      ) {
+        $.ajax({
+          url: '/logout',
+          success(backData) {
+            // console.log(backData)
+            alert(backData.msg)
+            if (backData.code === 200) {
+              window.location.href = './login.html'
+            }
+          }
+        })
       }
     })
   })

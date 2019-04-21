@@ -9,9 +9,12 @@ const upload = multer({ dest: 'views/imgs/' })
 const path = require('path')
 // 导入body-parser中间件
 const bodyParser = require('body-parser')
-
 // 导入验证码模块
-const svgCaptcha = require('svg-captcha');
+const svgCaptcha = require('svg-captcha')
+// 导入cookie-session模块
+var cookieSession = require('cookie-session')
+
+//--------------------华丽的分割线----------------
 
 // 实例化服务器对象
 const app = express()
@@ -19,6 +22,22 @@ const app = express()
 app.use(express.static('views'))
 // 注册中间件 body-parser
 app.use(bodyParser.urlencoded({ extended: false }))
+// 注册中间件
+app.use(
+  cookieSession({
+    name: 'session',
+    keys: ['key1', 'key2'],
+    // Cookie Options
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  })
+)
+
+// 请求中多了一个 session属性
+app.use((req, res, next) => {
+  // console.log('自己的中间件')
+  // console.log(req.session)
+  next()
+})
 
 // 路由1 英雄列表 带分页 带查询
 app.get('/heroList', (req, res) => {
@@ -194,16 +213,74 @@ app.post('/register', (req, res) => {
 })
 
 // 路由7 返回验证码
-app.get('/captcha', function (req, res) {
+app.get('/captcha', function(req, res) {
   // 创建验证码
-	var captcha = svgCaptcha.create();
-  // req.session.captcha = captcha.text;
+  var captcha = svgCaptcha.create()
+  // 保存验证码到session中
+  req.session.vcode = captcha.text
   console.log(captcha.text)
   // 设置响应类型
-  res.type('svg');
+  res.type('svg')
   // 返回数据
-	res.status(200).send(captcha.data);
-});
+  res.status(200).send(captcha.data)
+})
+
+//  路由8 登录接口
+app.post('/login', (req, res) => {
+  // 获取数据
+  const username = req.body.username
+  const password = req.body.password
+  const vcode = req.body.vcode
+  // 验证码
+  if (req.session.vcode.toLowerCase() === vcode.toLowerCase()) {
+    // 继续验证用户名和密码
+    dbHelper.find(
+      'userlist',
+      {
+        username,
+        password
+      },
+      result => {
+        // res.send(result)
+        if (result.length != 0) {
+          // 保存用户的信息 （保存位置是服务器）
+          // req.session.userInfo = result[0]
+          req.session.username = username
+
+          // 登录成功
+          res.send({
+            msg: '欢迎回来',
+            code: 200,
+            // 额外的携带用户信息去浏览器
+            username
+          })
+        } else {
+          // 用户名或密码失败
+          res.send({
+            msg: '哥们，用户名或密码错误，请检查',
+            code: 400
+          })
+        }
+      }
+    )
+  } else {
+    res.send({
+      msg: '哥们，验证码不对哦，你是不是机器人呢 手动滑稽！！',
+      code: 401
+    })
+  }
+})
+
+// 路由9 登出接口
+app.get('/logout', (req, res) => {
+  // 清空session
+  req.session = null
+  // 返回信息
+  res.send({
+    msg: '再见',
+    code: 200
+  })
+})
 
 // 开启监听
 app.listen(8848)
