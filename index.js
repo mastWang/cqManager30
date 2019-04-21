@@ -7,11 +7,15 @@ const multer = require('multer')
 const upload = multer({ dest: 'views/imgs/' })
 // 导入path模块
 const path = require('path')
+// 导入body-parser中间件
+const bodyParser = require('body-parser')
 
 // 实例化服务器对象
 const app = express()
 // 托管静态资源
 app.use(express.static('views'))
+// 注册中间件 body-parser
+app.use(bodyParser.urlencoded({ extended: false }))
 
 // 路由1 英雄列表 带分页 带查询
 app.get('/heroList', (req, res) => {
@@ -149,6 +153,40 @@ app.get('/heroDelete', (req, res) => {
         msg: '删除成功',
         code: 200
       })
+    }
+  )
+})
+
+// 路由6 用户注册 不需要文件上传 只是 post数据获取
+app.post('/register', (req, res) => {
+  // post数据 通过body
+  // res.send(req.body)
+
+  // 查询
+  dbHelper.find(
+    'userlist',
+    {
+      username: req.body.username
+    },
+    result => {
+      // res.send(result)
+      if (result.length === 0) {
+        // 可以注册
+        // 保存
+        dbHelper.insertOne('userlist', req.body, result => {
+          // res.send(result)
+          res.send({
+            msg: '恭喜你，加入我们',
+            code: 200
+          })
+        })
+      } else {
+        // 已被注册
+        res.send({
+          msg: '哥们，这个名字已被注册,换个吧',
+          code: 400
+        })
+      }
     }
   )
 })
