@@ -43,9 +43,9 @@
                   <div class="col-sm-10">
                     <input
                       type="text"
-                      name="userName"
+                      name="username"
                       class="form-control"
-                      id="userName"
+                      id="username"
                       placeholder="请输入用户名"
                     />
                   </div>
@@ -57,9 +57,9 @@
                   <div class="col-sm-10">
                     <input
                       type="password"
-                      name="userPass"
+                      name="password"
                       class="form-control"
-                      id="userPass"
+                      id="password"
                       placeholder="请输入密码"
                     />
                   </div>
@@ -67,8 +67,8 @@
 
                 <div class="form-group">
                   <div class="col-sm-offset-2 col-sm-4">
-                    <button type="button" class="btn btn-success login">
-                      登陆
+                    <button type="button" class="btn btn-success register">
+                      注册
                     </button>
                     <a href="./login.html" class="btn btn-danger">返回</a>
                   </div>
@@ -85,3 +85,43 @@
 <script src="./lib/bootstrap/js/jquery-1.12.4.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="./lib/bootstrap/js/bootstrap.min.js"></script>
+<!-- 导入md5 -->
+<script src="./lib/md5/md5.min.js"></script>
+<script>
+  $(function() {
+    $('.register').click(function() {
+      // 格式验证
+      const regUserName = /^[a-z]+$/i
+      const username = $('#username').val()
+      if (regUserName.test(username)) {
+        console.log('符合')
+      } else {
+        console.log('不符合')
+        alert('哥们用户名不太对哦')
+        return
+      }
+
+      // 对输入的密码进行处理
+      // 加密计算的时候 额外的增加一个字段进行计算 "加盐"
+      const password = md5($('#password').val(),'westblueflower')
+      // 设置的文本框中
+      $('#password').val(password)
+
+      $.ajax({
+        url: '/register',
+        type: 'post',
+        // 表单元素中 有name属性的value值 拼接为 name=value&name2=value2
+        data: $('form').serialize(),
+        success(backData) {
+          // console.log(backData);
+          alert(backData.msg)
+          if (backData.code === 200) {
+            setTimeout(() => {
+              window.location.href = './login.html'
+            }, 1000)
+          }
+        }
+      })
+    })
+  })
+</script>

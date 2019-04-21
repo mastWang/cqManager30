@@ -10,6 +10,9 @@ const path = require('path')
 // 导入body-parser中间件
 const bodyParser = require('body-parser')
 
+// 导入验证码模块
+const svgCaptcha = require('svg-captcha');
+
 // 实例化服务器对象
 const app = express()
 // 托管静态资源
@@ -161,7 +164,6 @@ app.get('/heroDelete', (req, res) => {
 app.post('/register', (req, res) => {
   // post数据 通过body
   // res.send(req.body)
-
   // 查询
   dbHelper.find(
     'userlist',
@@ -190,6 +192,18 @@ app.post('/register', (req, res) => {
     }
   )
 })
+
+// 路由7 返回验证码
+app.get('/captcha', function (req, res) {
+  // 创建验证码
+	var captcha = svgCaptcha.create();
+  // req.session.captcha = captcha.text;
+  console.log(captcha.text)
+  // 设置响应类型
+  res.type('svg');
+  // 返回数据
+	res.status(200).send(captcha.data);
+});
 
 // 开启监听
 app.listen(8848)
