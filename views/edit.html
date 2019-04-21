@@ -29,6 +29,10 @@
         text-decoration: none;
         color: yellowgreen;
       }
+      .preview {
+        width: 100px;
+        height: 100px;
+      }
     </style>
   </head>
 
@@ -127,6 +131,8 @@
                       id="heroIcon"
                       name="heroIcon"
                     />
+                    <!-- 预览的标签 -->
+                    <img src="" class="preview" alt="" />
                   </div>
                 </div>
                 <div class="form-group">
@@ -171,6 +177,9 @@
         $('input[name=id]').val(backData._id)
         // file无法通过value设置内容
         // $('form #heroIcon').val(backData.heroIcon)
+
+        //  设置给  img标签即可
+        $('.preview').attr('src', backData.heroIcon)
       }
     })
 
@@ -197,6 +206,14 @@
     // 点击取消
     $('.btn-cancel').click(function() {
       window.location.href = './index.html'
+    })
+
+    // 图片本地预览
+    $('#heroIcon').change(function(event) {
+      console.log(event.target.files[0])
+      // console.log(event.files)
+      const url = URL.createObjectURL(event.target.files[0])
+      $('.preview').attr('src',url)
     })
   })
 </script>

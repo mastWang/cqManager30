@@ -29,6 +29,10 @@
         text-decoration: none;
         color: yellowgreen;
       }
+      .preview {
+        width: 100px;
+        height: 100px;
+      }
     </style>
   </head>
 
@@ -122,6 +126,7 @@
                       id="heroIcon"
                       name="heroIcon"
                     />
+                    <img src="" class="preview" alt="" />
                   </div>
                 </div>
                 <div class="form-group">
@@ -168,6 +173,14 @@
       })
 
       return false
+    })
+
+    // 图片本地预览
+    $('#heroIcon').change(function(event) {
+      console.log(event.target.files[0])
+      // console.log(event.files)
+      const url = URL.createObjectURL(event.target.files[0])
+      $('.preview').attr('src', url)
     })
   })
 </script>
