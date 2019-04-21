@@ -33,10 +33,30 @@ app.use(
 )
 
 // 请求中多了一个 session属性
+// 中间件的作用是:请求 - 中间件1-中间件2 -》 响应
 app.use((req, res, next) => {
+  // console.log(req.url.indexOf('/hero'))
+  if(req.url.indexOf('/hero')===0){
+    // 必须要登录才可以使用
+    // 登陆的依据
+    // console.log(req.session.username)
+    if(req.session.username){
+      // 已登录 可以继续使用
+      next()
+    }else{
+      // 未登录
+      // 不在往后执行 直接响应内容给用户 作为提示
+      res.send({
+        msg:'请先登录',
+        code:400
+      })
+    }
+  }else{
+    next()
+  }
   // console.log('自己的中间件')
   // console.log(req.session)
-  next()
+  // next()
 })
 
 // 路由1 英雄列表 带分页 带查询

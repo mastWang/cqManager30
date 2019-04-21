@@ -205,6 +205,12 @@
           query
         },
         success(backData) {
+          // 判断登录状态
+          if (backData.code === 400) {
+            alert('请先登录')
+            window.location.href = './login.html'
+          }
+
           // console.log(backData)
           // 渲染到页面上
           $('tbody').html(template('cq', backData))
