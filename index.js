@@ -25,6 +25,8 @@ app.get('/heroList', (req, res) => {
 
   // 获取所有数据
   dbHelper.find('cqlist', {}, result => {
+    // 数组倒序
+    result = result.reverse()
     // 检索出符合查询条件的数据
     const temArr = result.filter(v => {
       if (v.heroName.indexOf(query) != -1 || v.skillName.indexOf(query) != -1) {

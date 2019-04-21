@@ -225,13 +225,23 @@
     })
 
     // 搜索
-    $('input[name=search]').keyup(function(event) {
-      if (event.keyCode === 13) {
-        query = $(this).val()
-        getData()
-      }
-    })
-    $('button.btn-success').click(function(event) {
+    // $('input[name=search]').keyup(function(event) {
+    //   if (event.keyCode === 13) {
+    //     query = $(this).val()
+    //     getData()
+    //   }
+    // })
+    // $('button.btn-success').click(function(event) {
+    //   query = $('input[name=search]').val()
+    //   getData()
+    //   // 阻止默认行为
+    //   event.preventDefault()
+    // })
+
+    // 注册表单提交事件
+    // 表单中的 文本框 提交按钮 都会触发表单的 提交事件
+    $('form').submit(function(event) {
+      console.log('提交啦')
       query = $('input[name=search]').val()
       getData()
       // 阻止默认行为
@@ -262,7 +272,7 @@
             // console.log(backData)
             alert('我会记住你的！！！！！ (* ￣3)(ε￣ *)')
             // setTimeout(() => {
-              
+
             // }, timeout);
             getData()
           }
